@@ -9,5 +9,5 @@ $ npm install insite-subscriptions-react
 Or
 
 ```sh
-$ yarn add insite-subscriptions-react
+$ bun add insite-subscriptions-react
 ```
