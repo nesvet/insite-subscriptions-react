@@ -1,10 +1,29 @@
+import { Component, ReactNode } from "react";
 import { noop } from "@nesvet/n";
-import { Subscription, SubscriptionGroup } from "insite-subscriptions-client";
-import { Component } from "react";
+import {
+	Subscription,
+	SubscriptionGroup,
+	type Options as SubscriptionGroupOptions,
+	type SubscriptionGroupUnparsedDefinition,
+	type SubscriptionGroupValues
+} from "insite-subscriptions-client";
 
 
-export class SubscriptionGroupComponent extends Component {
-	constructor(props) {
+type Props = {
+	definitions: SubscriptionGroupUnparsedDefinition[];
+	target: SubscriptionGroupOptions["target"];
+	debounce: SubscriptionGroupOptions["debounce"];
+	valuesRef: (values: SubscriptionGroupValues) => void;
+	consistent: boolean;
+	children: (isLoaded: boolean, values: SubscriptionGroupValues) => ReactNode;
+	onUpdate: (group: SubscriptionGroup) => void;
+};
+
+type State = {} | undefined;// eslint-disable-line @typescript-eslint/ban-types
+
+
+export class SubscriptionGroupComponent extends Component<Props, State> {
+	constructor(props: Props) {
 		super(props);
 		
 		this.group = new SubscriptionGroup(props.definitions, {
@@ -18,6 +37,8 @@ export class SubscriptionGroupComponent extends Component {
 		props.valuesRef?.(this.group.values);
 		
 	}
+	
+	group;
 	
 	state = this.props.consistent ? undefined : {};
 	
@@ -35,13 +56,13 @@ export class SubscriptionGroupComponent extends Component {
 		return this.group.values;
 	}
 	
-	redefine = definitions => this.group.redefine(definitions);
+	redefine = (definitions: SubscriptionGroupUnparsedDefinition[]) => this.group.redefine(definitions);
 	
 	subscribe = () => this.group.subscribe();
 	
 	unsubscribe = () => this.group.unsubscribe();
 	
-	shouldComponentUpdate = this.props.consistent ? undefined : nextProps => {
+	shouldComponentUpdate = this.props.consistent ? undefined : (nextProps: Props) => {
 		if (this.props.target !== nextProps.target || this.props.debounce !== nextProps.debounce)
 			this.group.applyOptions({ target: nextProps.target, debounceLimit: nextProps.debounce });
 		

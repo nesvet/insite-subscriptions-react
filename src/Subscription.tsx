@@ -1,18 +1,42 @@
+import { Component, type ReactNode } from "react";
 import {
 	getSubscriptionSymbol,
 	renewSymbol,
 	subscribeSymbol,
 	Subscription,
 	SubscriptionArray,
+	SubscriptionArrayWithSubscription,
 	SubscriptionMap,
+	SubscriptionMapWithSubscription,
 	SubscriptionObject,
+	SubscriptionObjectWithSubscription,
 	unsubscribeSymbol
 } from "insite-subscriptions-client";
-import { Component } from "react";
 
 
-export class SubscriptionComponent extends Component {
-	constructor(props) {
+type Value = SubscriptionArrayWithSubscription | SubscriptionMapWithSubscription | SubscriptionObjectWithSubscription;
+
+type Props = {
+	map?: boolean;
+	array?: boolean;
+	publication: string;
+	params: unknown[];
+	Item?: SubscriptionMap["Item"];
+	valueRef: (value: Value) => void;
+	consistent?: boolean;
+	children?: (isActive: boolean, value: Value) => ReactNode;
+	onUpdate?: (value: Value) => void;
+};
+
+type State = {} | undefined;// eslint-disable-line @typescript-eslint/ban-types
+
+function isValueSubscriptionMap(props: Props, value: Value): value is SubscriptionMapWithSubscription {
+	return props.map === true;
+}
+
+
+export class SubscriptionComponent extends Component<Props, State> {
+	constructor(props: Props) {
 		super(props);
 		
 		const SubscriptionTarget =
@@ -26,7 +50,7 @@ export class SubscriptionComponent extends Component {
 		
 		this.value = target;
 		
-		if (props.map && props.Item)
+		if (isValueSubscriptionMap(props, target) && props.Item)
 			target.Item = props.Item;
 		
 		props.valueRef?.(this.value);
@@ -38,6 +62,8 @@ export class SubscriptionComponent extends Component {
 			undefined :
 			{};
 	
+	value;
+	
 	publicationSnapshot =
 		this.props.consistent ?
 			undefined :
@@ -47,7 +73,7 @@ export class SubscriptionComponent extends Component {
 		return this.value[getSubscriptionSymbol]()?.isActive ?? false;
 	}
 	
-	renew(publicationName, params) {
+	renew(publicationName: string, params: unknown[]) {
 		return this.value[renewSymbol](publicationName, params);
 	}
 	
@@ -60,7 +86,7 @@ export class SubscriptionComponent extends Component {
 	}
 	
 	
-	shouldComponentUpdate = this.props.consistent ? undefined : nextProps => {
+	shouldComponentUpdate = this.props.consistent ? undefined : (nextProps: Props) => {
 		const publicationSnapshot = JSON.stringify(nextProps.params) + nextProps.publication;
 		
 		if (this.publicationSnapshot === publicationSnapshot)
