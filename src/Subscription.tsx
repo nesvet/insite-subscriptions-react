@@ -28,7 +28,7 @@ type Props = {
 	onUpdate?: (value: Value) => void;
 };
 
-type State = {} | undefined;// eslint-disable-line @typescript-eslint/ban-types
+type State = object | undefined;
 
 function isValueSubscriptionMap(props: Props, value: Value): value is SubscriptionMapWithSubscription {
 	return props.map === true;
@@ -39,14 +39,12 @@ export class SubscriptionComponent extends Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
 		
-		const SubscriptionTarget =
+		const target =
 			props.map ?
-				SubscriptionMap :
+				new SubscriptionMap.WithSubscription(props.publication, props.params, (() => this.handleUpdate()), false) :
 				props.array ?
-					SubscriptionArray :
-					SubscriptionObject;
-		
-		const target = new SubscriptionTarget.WithSubscription(props.publication, props.params, () => this.handleUpdate(), false);
+					new SubscriptionArray.WithSubscription(props.publication, props.params, (() => this.handleUpdate()), false) :
+					new SubscriptionObject.WithSubscription(props.publication, props.params, (() => this.handleUpdate()), false);
 		
 		this.value = target;
 		

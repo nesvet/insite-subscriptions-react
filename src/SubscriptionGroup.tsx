@@ -3,11 +3,12 @@ import { noop } from "@nesvet/n";
 import {
 	Subscription,
 	SubscriptionGroup,
-	type Options as SubscriptionGroupOptions,
-	type SubscriptionGroupUnparsedDefinition,
-	type SubscriptionGroupValues
+	type SubscriptionGroupOptions,
+	type SubscriptionGroupUnparsedDefinition
 } from "insite-subscriptions-client";
 
+
+type SubscriptionGroupValues = any[] & Record<string, any>;// eslint-disable-line @typescript-eslint/no-explicit-any
 
 type Props = {
 	definitions: SubscriptionGroupUnparsedDefinition[];
@@ -19,7 +20,7 @@ type Props = {
 	onUpdate: (group: SubscriptionGroup) => void;
 };
 
-type State = {} | undefined;// eslint-disable-line @typescript-eslint/ban-types
+type State = object | undefined;
 
 
 export class SubscriptionGroupComponent extends Component<Props, State> {
