@@ -5,7 +5,7 @@
   "type": "module",
   "main": "./src/index.js",
   "module": "./src/index.js",
-  "packageManager": "bun@1.1.33",
+  "packageManager": "bun@1.1.36",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p ."
@@ -23,12 +23,12 @@
   "license": "MIT",
   "dependencies": {
     "@nesvet/n": "^1.1.7",
-    "insite-subscriptions-client": "^2.0.4",
+    "insite-subscriptions-client": "^2.0.6",
     "react": "~18.2.0"
   },
   "devDependencies": {
     "@nesvet/eslint-config": "^2.0.34",
-    "@types/react": "^18.3.12",
-    "typescript": "^5.6.3"
+    "@types/react": "^18.3.18",
+    "typescript": "^5.7.2"
   }
 }
