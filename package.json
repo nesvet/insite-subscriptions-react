@@ -23,7 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "@nesvet/n": "^1.1.23",
-    "insite-subscriptions-client": "^2.1.3",
+    "insite-subscriptions-client": "^2.1.4",
     "react": "~18.2.0"
   },
   "devDependencies": {
